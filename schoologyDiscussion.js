@@ -10,10 +10,14 @@ window.addEventListener("load",()=>{
         if(LAST_KEYS.length>LAUNCH_STRING.length){
             LAST_KEYS.pop();
         }
+        console.log(LAST_KEYS.reverse().join(""),LAUNCH_STRING);
         if(LAST_KEYS.reverse().join("")===LAUNCH_STRING){
+            setTimeout(()=>{
             for(var i = 0;i<LAUNCH_STRING.length;i++){
                 tinymce.activeEditor.execCommand("Delete");
             }
+            doTheMagic();
+        },0);
         }
     });
 
