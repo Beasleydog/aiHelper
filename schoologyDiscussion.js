@@ -85,7 +85,7 @@ window.addEventListener("load",()=>{
             if(getComputedStyle(PLACEHOLDER).display=="block")PLACEHOLDER.click();
 
             if (t === "\n") {
-                tinymce.activeEditor.execCommand('mceInsertLineBreak',true);
+                tinymce.activeEditor.execCommand('InsertLineBreak',true);
                 return;
             }
             tinyMCE.activeEditor.execCommand('mceInsertContent', false, t); 
