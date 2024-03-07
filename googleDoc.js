@@ -164,12 +164,30 @@ window.addEventListener('load', () => {
             });
         });
     }
-
+    function handleEditShortcut() {
+        let selectedText = getSelectedText();
+        let fullText = getDocText();
+        let edits = prompt("What changes?");
+        fullText += `[INST]Implement these changes "${edits}" on this text: ${selectedText}[/INST]`;
+        askAI(fullText, (text) => {
+            console.log(text);
+            if (text === "\n") {
+                sendKey("keydown", "Enter", 13);
+                return;
+            }
+            text.split("").forEach((char) => {
+                sendKey("keypress", char, char.charCodeAt(0));
+            });
+        });
+    }
 
     document.querySelector('.docs-texteventtarget-iframe')
         .contentDocument.addEventListener("keydown", function (e) {
             if (e.key === "a" && e.ctrlKey && e.altKey) {
                 handleStartShortcut();
+            }
+            if (e.key === "s" && e.ctrlKey && e.altKey) {
+                handleEditShortcut();
             }
         });
 });
