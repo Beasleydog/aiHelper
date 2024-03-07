@@ -23,7 +23,7 @@ window.addEventListener("load",()=>{
 
     async function askAI(text, streamHook) {
         const MAX_TOKENS = 1000;
-        const SYTEM_PROMPT = "I have attatched background context for you to consider and reference. I have alo attatched sample responses for you to model. I have also highlighted a question for you to answer.";
+        const SYTEM_PROMPT = "I have attatched background context for you to consider and reference. I have alo attatched sample responses for you to model, emulate their length and style. I have also highlighted a question for you to answer.";
 
         text = SYTEM_PROMPT + text;
 
@@ -85,7 +85,7 @@ window.addEventListener("load",()=>{
             if(getComputedStyle(PLACEHOLDER).display=="block")PLACEHOLDER.click();
 
             if (t === "\n") {
-                tinymce.activeEditor.execCommand('mceInsertNewLine',true);
+                tinymce.activeEditor.execCommand('mceInsertLineBreak',true);
                 return;
             }
             tinyMCE.activeEditor.execCommand('mceInsertContent', false, t); 
