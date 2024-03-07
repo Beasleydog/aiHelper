@@ -2,17 +2,20 @@ window.addEventListener("load",()=>{
     //Only run on Schoology discussions
     if(!document.getElementsByClassName("discussion-content")[0])return;
     if(window!=window.top)return;
-    const AUTO_BUTTON = document.createElement("button");
-    AUTO_BUTTON.innerText="Answer";
-    Object.assign(AUTO_BUTTON.style,{
-    padding:"2px",
-        fontSize:"13px",
-        margin:"10px",
-        marginBottom:"0px",
-        cursor:"pointer"
+   
+    const LAUNCH_STRING = "???";
+    let LAST_KEYS = [];
+    tinyMCE.activeEditor.contentDocument.addEventListener("keydown",(e)=>{
+        LAST_KEYS =[e.key].concat(LAST_KEYS);
+        if(LAST_KEYS.length>LAUNCH_STRING.length){
+            LAST_KEYS.pop();
+        }
+        if(LAST_KEYS.reverse().join("")===LAUNCH_STRING){
+            for(var i = 0;i<LAUNCH_STRING.length;i++){
+                tinymce.activeEditor.execCommand("Delete");
+            }
+        }
     });
-    let TARGET = document.getElementsByClassName("s-comments-post-form")[0];
-    TARGET.parentNode.insertBefore(AUTO_BUTTON,TARGET.nextSibling);
 
     async function askAI(text, streamHook) {
         const MAX_TOKENS = 1000;
@@ -67,7 +70,7 @@ window.addEventListener("load",()=>{
         }
     }
 
-    AUTO_BUTTON.onclick=()=>{
+    function doTheMagic(){
         const OTHER_RESPONSE_TEXT = Array.from(document.querySelectorAll(".comment-more-wrapper")).map(x=>x.innerText);
         const QUESTION_TEXT = document.getElementsByClassName("discussion-prompt")[0].innerText;
     
