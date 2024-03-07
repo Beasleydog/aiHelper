@@ -1,7 +1,7 @@
 window.addEventListener("load",()=>{
     //Only run on Schoology discussions
     if(!document.getElementsByClassName("discussion-content")[0])return;
-
+    if(window!=window.top)return;
     const AUTO_BUTTON = document.createElement("button");
     AUTO_BUTTON.innerText="Answer";
     Object.assign(AUTO_BUTTON.style,{
