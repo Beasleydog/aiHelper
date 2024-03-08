@@ -94,7 +94,6 @@ window.addEventListener('load', () => {
                 newData.split("\n\n").forEach((chunk) => {
                     chunk = chunk.replace("data:", "");
                     try {
-                        console.log(chunk);
                         chunk = JSON.parse(chunk);
                         if (!chunk.token.special && !indexsAdded.includes(chunk.index)) {
                             indexsAdded.push(chunk.index);
@@ -156,28 +155,43 @@ window.addEventListener('load', () => {
         askAI(fullText, (text) => {
             console.log(text);
             if (text === "\n") {
-                sendKey("keydown", "Enter", 13);
-                return;
+                CHAR_QUEUE.push(text);
+            } else {
+                text.split("").forEach((char) => {
+                    CHAR_QUEUE.push(char);
+                });
             }
-            text.split("").forEach((char) => {
-                sendKey("keypress", char, char.charCodeAt(0));
-            });
         });
     }
+    let CHAR_QUEUE = [];
+    function insertFromQueue() {
+        let newChar = CHAR_QUEUE[0];
+        if (!newChar) return;
+        CHAR_QUEUE = CHAR_QUEUE.slice(1);
+
+        if (newChar === "\n") {
+            sendKey("keydown", "Enter", 13);
+            return;
+        }
+
+        sendKey("keypress", newChar, newChar.charCodeAt(0));
+    }
+    setInterval(insertFromQueue, 5);
     function handleEditShortcut() {
         let selectedText = getSelectedText();
         let fullText = getDocText();
         let edits = prompt("What changes?");
+        if (!edits) return;
         fullText += `[INST]Implement these changes "${edits}" on this text: ${selectedText}[/INST]`;
         askAI(fullText, (text) => {
             console.log(text);
             if (text === "\n") {
-                sendKey("keydown", "Enter", 13);
-                return;
+                CHAR_QUEUE.push(text);
+            } else {
+                text.split("").forEach((char) => {
+                    CHAR_QUEUE.push(char);
+                });
             }
-            text.split("").forEach((char) => {
-                sendKey("keypress", char, char.charCodeAt(0));
-            });
         });
     }
 
