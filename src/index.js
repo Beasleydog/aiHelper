@@ -9,6 +9,9 @@ const discussion = require("./Schoology/discussion.js");
 const fromSelection = require("./GoogleDocs/fromSelection.js");
 const fullAuto = require("./GoogleDocs/fullAuto.js");
 
+//CodeHS imports
+const quizHints = require("./CodeHS/quizHints.js");
+
 window.addEventListener("load", () => {
     if (window.top != window) return;
 
@@ -31,6 +34,13 @@ window.addEventListener("load", () => {
                 }
             }
             break;
+        case "https://codehs.com":
+            if(location.pathname.includes("/assignment/")){
+                console.log("trying to inject");
+                if(quizHints()){
+                    injected = true;
+                }
+            }
         default:
             break;
     }
@@ -43,5 +53,7 @@ window.addEventListener("load", () => {
         }, 1000);
     };
 });
+
+// fetch("https://quizlet.com/webapi/3.2/suggestions/word?clientId=-1692779200083616130&limit=3&localTermId=-1&prefix=Consider%20the%20code%20segment&wordLang=en")
 
 //Add little robot emoji popup in corner of screen when we inject something

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Beasleydog/aiHelper#readme",
   "dependencies": {
+    "express": "^4.18.3",
     "webpack": "^5.90.3"
   },
   "devDependencies": {
