@@ -1,0 +1,25 @@
+{
+  "name": "aihelper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "generalUse.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Beasleydog/aiHelper.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Beasleydog/aiHelper/issues"
+  },
+  "homepage": "https://github.com/Beasleydog/aiHelper#readme",
+  "dependencies": {
+    "webpack": "^5.90.3"
+  },
+  "devDependencies": {
+    "webpack-cli": "^5.1.4"
+  }
+}
