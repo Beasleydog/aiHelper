@@ -12,11 +12,22 @@ const fullAuto = require("./GoogleDocs/fullAuto.js");
 //CodeHS imports
 const quizHints = require("./CodeHS/quizHints.js");
 
+//Scrape import
+const shouldInjectScraper = require("./Scraping/shouldInjectScraper.js");
+const pageText = require("./Scraping/pageText.js");
+const requestContent = require("./Scraping/requestContent.js");
+
+window.requestContent = requestContent;
+console.log(requestContent);
+console.log("test");
 window.addEventListener("load", () => {
     if (window.top != window) return;
 
+    if(shouldInjectScraper(location.href)){
+        pageText();
+    }
+
     let injected = false;
-    console.log("before");
     switch (location.origin) {
         case "https://docs.google.com":
             if (fromSelection()) {
