@@ -1,7 +1,7 @@
 const askAI = require("../AI/askAI");
 const {answerQuestionPrompt} = require("./prompts");
-
-function quizHints(){
+const requestContent=require("../Scraping/requestContent");
+async function quizHints(){
     const questionMap = [...document.getElementsByClassName("quiz-questions")[0].children].map((x)=>{
         return {
             element:x,
@@ -10,14 +10,17 @@ function quizHints(){
         }
         });
 console.log(questionMap);
-    questionMap.forEach(async (x)=>{
-        let prompt = answerQuestionPrompt(x.questionText,x.answers);
-        let response = await askAI(prompt);
-
-        let responseText = document.createElement("p");
-        responseText.innerText = response;
-        x.element.appendChild(responseText);
-    })
+console.log(requestContent);
+        for(var i = 0;i<questionMap.length;i++){
+            let firstFiveWordsOfQuestion=questionMap[i].questionText.split(" ").slice(0,5).join(" ");
+            let targetURL = `https://quizlet.com/webapi/3.2/suggestions/word?clientId=-1692779200083616130&limit=3&localTermId=-1&prefix=${firstFiveWordsOfQuestion}&wordLang=en`;
+            console.log(targetURL);
+            let apiResponse = await requestContent(targetURL);
+            console.log(apiResponse);
+            await new Promise((res)=>{
+                setTimeout(res,100);
+            });
+    }
 
     return true;
 }
