@@ -6,6 +6,7 @@ const sendKeyToDoc = require("./utils/sendKeyToDoc.js");
 const { fromSelectionPrompt, determineIfModifyPrompt } = require("./prompts.js");
 const { setRobotShowing } = require("../utils/robotIcon.js");
 function fromSelection() {
+    window.sendKeyToDoc = sendKeyToDoc;
     console.log(getDocText());
 
 
