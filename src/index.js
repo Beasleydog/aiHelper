@@ -11,20 +11,24 @@ const fullAuto = require("./GoogleDocs/fullAuto.js");
 
 //CodeHS imports
 const quizHints = require("./CodeHS/quizHints.js");
+console.log("what");
 
 //Scrape import
 const shouldInjectScraper = require("./Scraping/shouldInjectScraper.js");
-const pageText = require("./Scraping/pageText.js");
+const pageContent = require("./Scraping/pageContent.js");
 const requestContent = require("./Scraping/requestContent.js");
+const getGoogleLinks = require("./WebSearch/getGoogleLinks.js");
 
-window.requestContent = requestContent;
-console.log(requestContent);
-console.log("test");
+//Note that we have to do it right away incase the url gets overwritten by the webpage like wiht a google search
+const shouldScrape = shouldInjectScraper(location.href);
+const ogOpener = window.opener;
+window.getGoogleLinks = getGoogleLinks;
 window.addEventListener("load", () => {
     if (window.top != window) return;
 
-    if(shouldInjectScraper(location.href)){
-        pageText();
+    if(shouldScrape){
+        window.opener=ogOpener;
+        pageContent();
     }
 
     let injected = false;
