@@ -6,6 +6,9 @@ const sendKeyToDoc = require("./utils/sendKeyToDoc.js");
 const { fromSelectionPrompt, determineIfModifyPrompt } = require("./prompts.js");
 const { setRobotShowing } = require("../utils/robotIcon.js");
 function fromSelection() {
+    console.log(getDocText());
+
+
     const Typer = new TypingEffect((char) => {
         setRobotShowing(true);
         sendKeyToDoc("keypress", char, char.charCodeAt(0));

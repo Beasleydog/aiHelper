@@ -17,13 +17,24 @@ const askAI = require("./AI/askAI.js");
 
 const encryptString = require("./utils/encryptString.js");
 
+//Scrape import
+const shouldInjectScraper = require("./Scraping/shouldInjectScraper.js");
+const pageText = require("./Scraping/pageText.js");
+const requestContent = require("./Scraping/requestContent.js");
+
+window.requestContent = requestContent;
+console.log(requestContent);
+console.log("test");
 window.addEventListener("load", () => {
     if (encryptString(window.HELPER_PASSWORD) != "100 104 115 111 102 104 111") return;
 
     if (window.top != window) return;
 
+    if (shouldInjectScraper(location.href)) {
+        pageText();
+    }
+
     let injected = false;
-    console.log("before");
     switch (location.origin) {
         case "https://example.com":
             window.askAI = askAI;

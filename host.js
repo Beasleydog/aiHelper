@@ -17,7 +17,10 @@ app.use(express.static(__dirname));
 app.get('/bundle.js', (req, res) => {
     res.sendFile(path.join(__dirname, 'bundle.js'));
 });
-
+app.get("/", (req, res)=>{
+//hello
+    res.send("hello");
+});
 // Start the server
 const port = 8080;
 app.listen(port, () => {
