@@ -10,6 +10,7 @@ function initRobotIcon() {
         "z-index": "1000000",
     });
     ROBOT_DISPLAY.id = "AI_HELPER_ROBOT_ICON";
+
     document.body.appendChild(ROBOT_DISPLAY);
 
     setRobotShowing(false);

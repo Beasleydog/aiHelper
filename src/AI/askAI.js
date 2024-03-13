@@ -1,4 +1,4 @@
-async function askAI(text, streamHook) {
+async function askAI(text, streamHook, extraParams) {
     return new Promise(async (res) => {
         const MAX_TOKENS = 1000;
         const SYTEM_PROMPT = "Make sure to use \n to signify a line break in your response. Keep all sentences in your response short. Use mostly sentence fragments, don't focus too much on proper sentences.";
@@ -11,11 +11,12 @@ async function askAI(text, streamHook) {
             parameters: {
                 max_new_tokens: MAX_TOKENS,
                 return_full_text: false,
+                ...extraParams
             },
         }
 
         const response = await fetch(
-            "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1",
+            extraParams?.url || "https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1",
             {
                 headers: {
                     "Content-Type": "application/json",

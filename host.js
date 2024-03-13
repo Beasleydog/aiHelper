@@ -19,7 +19,7 @@ app.get('/bundle.js', (req, res) => {
 });
 
 // Start the server
-const port = 8000;
+const port = 8080;
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
