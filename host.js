@@ -3,22 +3,16 @@ const path = require('path');
 
 const app = express();
 
-// Middleware to set CORS headers
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Allow requests from any origin
-    res.setHeader('Content-Type', 'application/javascript');
-    next();
-});
 
-// Serve static files from the current directory
-app.use(express.static(__dirname));
 
 // Route for serving bundle.js with the correct Content-Type
 app.get('/bundle.js', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Allow requests from any origin
+    res.setHeader('Content-Type', 'application/javascript');
     res.sendFile(path.join(__dirname, 'bundle.js'));
 });
-app.get("/", (req, res)=>{
-//hello
+app.get("/", (req, res) => {
+    //hello
     res.send("hello");
 });
 // Start the server

@@ -5,6 +5,8 @@ const TypingEffect = require("../utils/typingEffect.js");
 const sendKeyToDoc = require("./utils/sendKeyToDoc.js");
 const { fromSelectionPrompt, determineIfModifyPrompt } = require("./prompts.js");
 const { setRobotShowing } = require("../utils/robotIcon.js");
+const { webSearchFromContextAndSelectionPrompt } = require("../WebSearch/prompts.js");
+const webArticleFromQuery = require("../WebSearch/webArticleFromQuery");
 function fromSelection() {
     window.sendKeyToDoc = sendKeyToDoc;
     console.log(getDocText());
@@ -30,14 +32,24 @@ function fromSelection() {
         setRobotShowing(true);
 
         let modify = false;
+        let context = fullText;
+
         if (extraInstructions && extraInstructions.length > 0) {
             const modifyPrompt = determineIfModifyPrompt(extraInstructions);
             const modifyResponse = await askAI(modifyPrompt);
-            console.log("MODIFY RESPONSE", modifyResponse);
             modify = modifyResponse.includes("<MODIFY>");
         }
+        console.log(extraInstructions, extraInstructions.includes("web"));
+        if (extraInstructions.includes("web")) {
+            console.log("Getting web background knowledge");
+            //Get some web background knowledge
+            const webQuery = await askAI(webSearchFromContextAndSelectionPrompt(fullText, selectedText));
+            const webArticle = await webArticleFromQuery(webQuery);
+            console.log(webArticle);
+            context += webArticle.text;
+        }
 
-        const promptText = fromSelectionPrompt(fullText, selectedText, extraInstructions);
+        const promptText = fromSelectionPrompt(context, selectedText, extraInstructions);
 
         console.log(!modify);
         if (!modify) {
@@ -46,7 +58,8 @@ function fromSelection() {
             sendKeyToDoc("keydown", "Enter", 13);
             sendKeyToDoc("keydown", "Enter", 13);
         }
-
+        console.log("PROMPT");
+        console.log(promptText);
         askAI(promptText, (text) => {
             Typer.addWord(text);
         });

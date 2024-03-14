@@ -7,11 +7,9 @@ const discussion = require("./Schoology/discussion.js");
 
 //Google Docs imports
 const fromSelection = require("./GoogleDocs/fromSelection.js");
-const fullAuto = require("./GoogleDocs/fullAuto.js");
 
 //CodeHS imports
 const quizHints = require("./CodeHS/quizHints.js");
-console.log("what");
 
 //Exposed functions import
 const askAI = require("./AI/askAI.js");
@@ -19,24 +17,20 @@ const askAI = require("./AI/askAI.js");
 const encryptString = require("./utils/encryptString.js");
 
 //Scrape import
-const shouldInjectScraper = require("./Scraping/shouldInjectScraper.js");
-const pageContent = require("./Scraping/pageContent.js");
-const requestContent = require("./Scraping/requestContent.js");
 const getGoogleLinks = require("./WebSearch/getGoogleLinks.js");
-
-//Note that we have to do it right away incase the url gets overwritten by the webpage like wiht a google search
-const shouldScrape = shouldInjectScraper(location.href);
-const ogOpener = window.opener;
+const handleScrapingInjects = require("./Scraping/handleScrapingInjects.js");
+const webArticleFromQuery = require("./WebSearch/webArticleFromQuery.js");
+const requestContent = require("./Scraping/requestContent.js");
 window.getGoogleLinks = getGoogleLinks;
+window.webArticleFromQuery = webArticleFromQuery;
+window.requestContent = requestContent;
+handleScrapingInjects();
+
 window.addEventListener("load", () => {
     if (encryptString(window.HELPER_PASSWORD) != "100 104 115 111 102 104 111") return;
 
     if (window.top != window) return;
 
-    if (shouldScrape) {
-        window.opener = ogOpener;
-        pageContent();
-    }
 
     let injected = false;
     switch (location.origin) {

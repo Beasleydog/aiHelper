@@ -1,29 +1,28 @@
-async function requestContent(url){
-    return new Promise((res)=>{
-    let w = window.open(`${url}#AI_HELPER_SCRAPE`, "_blank",{
-        width:0,
-        height:0,
-        left:0,
-        top:0,
-        location:0,
-        menubar:0,
-        toolbar:0,
-        status:0,
-        scrollbars:0,
-        resizable:0,
-    });
-    let c = (e)=>{
-        console.log(e);
-        return;
-        if(e.origin!=urlOrigin)return;
-        w.close();
-        res(e.data);
+async function requestContent(url) {
+    return new Promise((res) => {
+        let currentOrigin = new URL(location.href).origin;
+        let w = window.open(`${url}#AI_HELPER_SCRAPE_${currentOrigin}`, "_blank");
+        let c = (e) => {
+            const urlOrigin = new URL(url).origin;
+            try {
+                if (e.currentTarget.name != "AI_HELPER_SCRAPE_AMPLIFY") {
+                    if (e.origin != urlOrigin) {
+                        console.log("ORIGIN RETURN");
+                        return;
+                    }
+                }
+            } catch { }
+            if (e.data.type != "AI_HELPER_SCRAPE_RETURN") return;
+            w.close();
+            window.removeEventListener("message", c);
+            bc.close();
+            res(e.data);
+        };
+        window.addEventListener("message", c);
 
-        bc.close();
-    };
-    const bc = new BroadcastChannel("AI_HELPER_SCRAPE_CONTENT");
-    bc.onmessage= c;
-    console.log(bc);
-});
+        //Backup incase requested content is stupid
+        const bc = new BroadcastChannel(`AI_HELPER_SCRAPE_AMPLIFY`);
+        bc.onmessage = c;
+    });
 }
-module.exports=requestContent;
+module.exports = requestContent;
