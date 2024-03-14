@@ -9,7 +9,6 @@ const { webSearchFromContextAndSelectionPrompt } = require("../WebSearch/prompts
 const webArticleFromQuery = require("../WebSearch/webArticleFromQuery");
 function fromSelection() {
     window.sendKeyToDoc = sendKeyToDoc;
-    console.log(getDocText());
 
 
     const Typer = new TypingEffect((char) => {
