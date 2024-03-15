@@ -1,7 +1,8 @@
 const askAI = require("../AI/askAI");
 const TypingEffect = require("../utils/typingEffect.js");
 const { setRobotShowing } = require("../utils/robotIcon.js");
-
+const allChildren = require("../utils/allChildren.js");
+const Context = require("../Context/context.js");
 function discussion() {
     const Typer = new TypingEffect((char) => {
         setRobotShowing(true);
@@ -34,13 +35,23 @@ function discussion() {
     });
 
 
-    function doTheMagic() {
+    async function doTheMagic() {
         let OTHER_RESPONSE_TEXT = Array.from(document.querySelectorAll(".comment-more-wrapper")).map(x => x.innerText);
         OTHER_RESPONSE_TEXT = OTHER_RESPONSE_TEXT.map(x => x.replace("Show Less", ""));
         OTHER_RESPONSE_TEXT = OTHER_RESPONSE_TEXT.map(x => x.replace("Show More", ""));
-        const QUESTION_TEXT = document.getElementsByClassName("discussion-prompt")[0].innerText;
 
-        let text = `${OTHER_RESPONSE_TEXT.join("\n")} [INST]${QUESTION_TEXT}[/INST]`;
+        const QUESTION_ELEMENT = document.getElementsByClassName("discussion-prompt")[0];
+        const QUESTION_TEXT = QUESTION_ELEMENT.innerText;
+        const QUESTION_LINKS = allChildren(document.getElementsByClassName("discussion-prompt")[0]).map(x=>x.href).filter(x=>x)
+
+        const DiscussionContext = new Context();
+        DiscussionContext.addContext(OTHER_RESPONSE_TEXT.join("\n"));
+        
+        for(let link of QUESTION_LINKS){
+            await DiscussionContext.addURL(link);
+        }
+        console.log(QUESTION_LINKS);
+        let text = `${DiscussionContext.fullContext()} [INST]${QUESTION_TEXT}[/INST]`;
 
         askAI(text, (t) => {
             const PLACEHOLDER = document.getElementById("comment-placeholder")

@@ -7,6 +7,7 @@ function amplifyScrapedContent() {
             ...e.data,
             type: "AI_HELPER_SCRAPE_RETURN",
         };
+        console.log(msg);
         const bc = new BroadcastChannel("AI_HELPER_SCRAPE_AMPLIFY");
         bc.postMessage(msg);
         bc.close();

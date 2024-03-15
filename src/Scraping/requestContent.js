@@ -1,18 +1,15 @@
 async function requestContent(url) {
     return new Promise((res) => {
+        //Note that we can't just match by url. Sometabs redirect or add wacky stuff to the url when you visit.
+        let REQUEST_ID = Math.random().toString(36).substring(7);
+
         let currentOrigin = new URL(location.href).origin;
-        let w = window.open(`${url}#AI_HELPER_SCRAPE_${currentOrigin}`, "_blank");
+        let w = window.open(`${url}#AI_HELPER_SCRAPE_${REQUEST_ID}_${currentOrigin}`, "_blank");
+        
         let c = (e) => {
-            const urlOrigin = new URL(url).origin;
-            try {
-                if (e.currentTarget.name != "AI_HELPER_SCRAPE_AMPLIFY") {
-                    if (e.origin != urlOrigin) {
-                        console.log("ORIGIN RETURN");
-                        return;
-                    }
-                }
-            } catch { }
+            console.log("Message recieved",e.data);
             if (e.data.type != "AI_HELPER_SCRAPE_RETURN") return;
+            if(e.data.REQUEST_ID != REQUEST_ID) return;
             clean();
             res(e.data);
         };
