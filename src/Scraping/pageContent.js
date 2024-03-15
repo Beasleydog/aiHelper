@@ -1,8 +1,10 @@
+const grabYoutubeTranscript = require("./grabYoutubeTranscript");
+
 function pageContent() {
     let locHref = location.href;
     window.addEventListener("load", () => {
         //Extra buffer, sometimes onload isnt enough for some reason
-        setTimeout(() => {
+        setTimeout(async () => {
             console.log("load");
             let msg = {
                 type: "AI_HELPER_SCRAPE_RETURN",
@@ -10,6 +12,11 @@ function pageContent() {
                 text: document.body.innerText,
                 html: document.body.innerHTML
             };
+
+            //Special case for youtube
+            if (location.href.includes("https://www.youtube.com/watch")) {
+                msg.text = await grabYoutubeTranscript();
+            }
 
             if (window.opener) {
                 //What a nice, respectful tab
