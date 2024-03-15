@@ -14,6 +14,7 @@ function amplifyScrapedContent() {
         window.removeEventListener("message", c);
     }
     window.addEventListener("message", c);
+    console.log("opener is ", window.opener);
     window.opener.postMessage("AI_HELPER_AMPLIFY_SCRAPE_READY", "*");
 }
 module.exports = amplifyScrapedContent;

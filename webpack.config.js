@@ -6,7 +6,8 @@ module.exports = {
         filename: 'bundle.js',
         path: __dirname
     },
-    plugins: [new WebpackObfuscator({
-        rotateStringArray: true
-    }, [])]
+
 };
+// plugins: [new WebpackObfuscator({
+//     rotateStringArray: true
+// }, [])]

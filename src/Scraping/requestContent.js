@@ -13,9 +13,7 @@ async function requestContent(url) {
                 }
             } catch { }
             if (e.data.type != "AI_HELPER_SCRAPE_RETURN") return;
-            w.close();
-            window.removeEventListener("message", c);
-            bc.close();
+            clean();
             res(e.data);
         };
         window.addEventListener("message", c);
@@ -23,6 +21,23 @@ async function requestContent(url) {
         //Backup incase requested content is stupid
         const bc = new BroadcastChannel(`AI_HELPER_SCRAPE_AMPLIFY`);
         bc.onmessage = c;
+
+        setTimeout(() => {
+            //Failure ☹️
+            clean();
+            res({
+                type: "AI_HELPER_SCRAPE_RETURN",
+                url: url,
+                text: "",
+                html: ""
+            });
+        }, 30 * 1000);
+
+        let clean = () => {
+            w.close();
+            window.removeEventListener("message", c);
+            bc.close();
+        }
     });
 }
 module.exports = requestContent;

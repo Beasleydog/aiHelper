@@ -3,13 +3,16 @@ const getSelectedText = require("./utils/getSelectedText.js");
 const getDocText = require("./utils/getDocText.js");
 const TypingEffect = require("../utils/typingEffect.js");
 const sendKeyToDoc = require("./utils/sendKeyToDoc.js");
+const getDocLinks = require("./utils/getDocLinks.js");
 const { fromSelectionPrompt, determineIfModifyPrompt } = require("./prompts.js");
 const { setRobotShowing } = require("../utils/robotIcon.js");
 const { webSearchFromContextAndSelectionPrompt } = require("../WebSearch/prompts.js");
 const webArticleFromQuery = require("../WebSearch/webArticleFromQuery");
+const Context = require("../Context/context.js");
 function fromSelection() {
     window.sendKeyToDoc = sendKeyToDoc;
-
+    window.getDocLinks = getDocLinks;
+    const DocContext = new Context();
 
     const Typer = new TypingEffect((char) => {
         setRobotShowing(true);
@@ -24,33 +27,40 @@ function fromSelection() {
     };
 
     async function handleShortcut() {
-        const selectedText = getSelectedText();
-        const fullText = getDocText();
-        const extraInstructions = prompt("Extra instructions?");
-
         setRobotShowing(true);
 
-        let modify = false;
-        let context = fullText;
+        const selectedText = getSelectedText();
+        const fullText = getDocText();
+        let extraInstructions = prompt("Extra instructions?");
 
+        DocContext.clear();
+
+        const allLinks = getDocLinks();
+        for (let i = 0; i < allLinks.length; i++) {
+            await DocContext.addURL(allLinks[i]);
+        }
+
+        if (extraInstructions && extraInstructions.includes("web")) {
+            //Get some web background knowledge
+            const webQuery = await askAI(webSearchFromContextAndSelectionPrompt(fullText, selectedText));
+            const webArticle = await webArticleFromQuery(webQuery);
+            extraInstructions = extraInstructions.replace("web", "");
+            DocContext.addContext(webArticle.text);
+        }
+
+        let modify = false;
         if (extraInstructions && extraInstructions.length > 0) {
             const modifyPrompt = determineIfModifyPrompt(extraInstructions);
             const modifyResponse = await askAI(modifyPrompt);
             modify = modifyResponse.includes("<MODIFY>");
         }
-        console.log(extraInstructions, extraInstructions.includes("web"));
-        if (extraInstructions.includes("web")) {
-            console.log("Getting web background knowledge");
-            //Get some web background knowledge
-            const webQuery = await askAI(webSearchFromContextAndSelectionPrompt(fullText, selectedText));
-            const webArticle = await webArticleFromQuery(webQuery);
-            console.log(webArticle);
-            context += webArticle.text;
-        }
 
-        const promptText = fromSelectionPrompt(context, selectedText, extraInstructions);
+        DocContext.addContext(fullText);
 
-        console.log(!modify);
+        console.log("FULL CONTEXT", DocContext.fullContext());
+
+        const promptText = fromSelectionPrompt(DocContext.fullContext(), selectedText, extraInstructions);
+
         if (!modify) {
             //Move cursor to a new line
             sendKeyToDoc("keydown", "ArrowRight", 39);
