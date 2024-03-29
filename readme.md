@@ -1,7 +1,3 @@
 # AI Helper 😀
 
-1. Google Docs
-2. Schoology Discussions/Assignments
-3. Code HS
-
-Please excuse the jank 🙏
+https://github.com/Beasleydog/aiHelper/assets/49841434/5adc2004-289a-407d-8141-f7a17bdc83e3
